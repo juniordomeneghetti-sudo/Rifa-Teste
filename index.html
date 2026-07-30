@@ -1,91 +1,203 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rifa do Terreiro</title>
-  <style>
-    body{
-      font-family: Arial, sans-serif;
-      background:#f2f2f2;
-      padding:15px;
-    }
-    h1{
-      text-align:center;
-      color:#333;
-    }
-    table{
-      width:100%;
-      border-collapse:collapse;
-      background:white;
-      border-radius:10px;
-      overflow:hidden;
-    }
-    th, td{
-      border:1px solid #ddd;
-      padding:10px;
-      text-align:center;
-    }
-    th{
-      background:#222;
-      color:white;
-    }
-    input[type="text"]{
-      width:90%;
-      padding:6px;
-      border:1px solid #ccc;
-      border-radius:6px;
-    }
-    tr.pago{
-      background:#9be79b;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rifa do Terreiro</title>
+
+<style>
+body{
+  font-family: Arial, sans-serif;
+  background:#f3f3f3;
+  margin:0;
+  padding:15px;
+}
+h1{
+  text-align:center;
+  color:#222;
+}
+.admin{
+  text-align:center;
+  margin-bottom:15px;
+}
+button{
+  padding:8px 12px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+.btn-admin{background:#222;color:#fff;}
+.btn-reservar{background:#1976d2;color:#fff;}
+.btn-pago{background:#2e7d32;color:#fff;}
+.btn-liberar{background:#d32f2f;color:#fff;}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:#fff;
+  border-radius:10px;
+  overflow:hidden;
+}
+th,td{
+  border:1px solid #ddd;
+  padding:10px;
+  text-align:center;
+}
+th{
+  background:#222;
+  color:#fff;
+}
+input{
+  width:95%;
+  padding:6px;
+  border:1px solid #ccc;
+  border-radius:6px;
+}
+.travado input{
+  background:#eee;
+}
+.pago{
+  background:#a5d6a7 !important;
+}
+</style>
 </head>
 <body>
 
 <h1>Rifa do Terreiro</h1>
 
-<table id="rifa">
-  <thead>
-    <tr>
-      <th>Nome</th>
-      <th>Comprador</th>
-      <th>PIX Pago</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Maria</td>
-      <td><input type="text"></td>
-      <td><input type="checkbox" onchange="marcarPago(this)"></td>
-    </tr>
-    <tr>
-      <td>João</td>
-      <td><input type="text"></td>
-      <td><input type="checkbox" onchange="marcarPago(this)"></td>
-    </tr>
-    <tr>
-      <td>José</td>
-      <td><input type="text"></td>
-      <td><input type="checkbox" onchange="marcarPago(this)"></td>
-    </tr>
-    <tr>
-      <td>Ana</td>
-      <td><input type="text"></td>
-      <td><input type="checkbox" onchange="marcarPago(this)"></td>
-    </tr>
-  </tbody>
+<div class="admin">
+  <button class="btn-admin" onclick="loginAdmin()">Login Admin</button>
+  <p id="statusAdmin">Modo visitante</p>
+</div>
+
+<table>
+<thead>
+<tr>
+  <th>Nome</th>
+  <th>Comprador</th>
+  <th>Ação</th>
+  <th>PIX</th>
+</tr>
+</thead>
+<tbody id="tabela"></tbody>
 </table>
 
 <script>
-function marcarPago(checkbox){
-  const linha = checkbox.parentElement.parentElement;
-  if(checkbox.checked){
-    linha.classList.add("pago");
-  } else {
-    linha.classList.remove("pago");
+const senhaAdmin = 'Axé2026';
+let admin = false;
+
+const nomes = [
+  'Maria','João','José','Ana','Carlos',
+  'Fernanda','Paulo','Juliana','Ricardo','Camila'
+];
+
+function salvar(){
+  localStorage.setItem('rifaDados', JSON.stringify(dados));
+}
+
+function carregar(){
+  const salvo = localStorage.getItem('rifaDados');
+  return salvo ? JSON.parse(salvo) :
+    nomes.map(n => ({
+      nome:n,
+      comprador:'',
+      travado:false,
+      pago:false
+    }));
+}
+
+let dados = carregar();
+
+function render(){
+  const tbody = document.getElementById('tabela');
+  tbody.innerHTML = '';
+
+  dados.forEach((item, i) => {
+    const tr = document.createElement('tr');
+
+    if(item.pago) tr.classList.add('pago');
+    if(item.travado) tr.classList.add('travado');
+
+    let acao = '';
+    let pix = '';
+
+    if(item.pago){
+      pix = 'Pago';
+      acao = admin ? `<button class="btn-liberar" onclick="liberar(${i})">Liberar</button>` : 'Travado';
+    } else if(item.travado){
+      pix = admin ? `<button class="btn-pago" onclick="marcarPago(${i})">Marcar Pago</button>` : 'Aguardando';
+      acao = admin ? `<button class="btn-liberar" onclick="liberar(${i})">Liberar</button>` : 'Reservado';
+    } else {
+      pix = 'Pendente';
+      acao = `<button class="btn-reservar" onclick="reservar(${i})">Reservar</button>`;
+    }
+
+    tr.innerHTML = `
+      <td>${item.nome}</td>
+      <td>
+        <input id="comp${i}" value="${item.comprador}"
+        ${item.travado && !admin ? 'disabled' : ''}>
+      </td>
+      <td>${acao}</td>
+      <td>${pix}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+
+  salvar();
+}
+
+function reservar(i){
+  const input = document.getElementById(`comp${i}`);
+  const nome = input.value.trim();
+
+  if(!nome){
+    alert('Digite seu nome');
+    return;
+  }
+
+  dados[i].comprador = nome;
+  dados[i].travado = true;
+
+  render();
+}
+
+function loginAdmin(){
+  const s = prompt('Senha do administrador');
+
+  if(s === senhaAdmin){
+    admin = true;
+    document.getElementById('statusAdmin').innerText = 'Admin conectado';
+    render();
+  }else{
+    alert('Senha incorreta');
   }
 }
+
+function liberar(i){
+  if(!admin) return;
+
+  if(dados[i].pago){
+    alert('PIX já confirmado. Não pode ser removido.');
+    return;
+  }
+
+  dados[i].comprador = '';
+  dados[i].travado = false;
+
+  render();
+}
+
+function marcarPago(i){
+  if(!admin) return;
+
+  dados[i].pago = true;
+
+  render();
+}
+
+render();
 </script>
 
 </body>
