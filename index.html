@@ -7,69 +7,86 @@
   <style>
     body{
       font-family: Arial, sans-serif;
-      background:#f4f4f4;
-      text-align:center;
-      padding:20px;
+      background:#f2f2f2;
+      padding:15px;
     }
     h1{
+      text-align:center;
       color:#333;
     }
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px,1fr));
-      gap:10px;
-      max-width:900px;
-      margin:20px auto;
-    }
-    .nome{
+    table{
+      width:100%;
+      border-collapse:collapse;
       background:white;
-      border:2px solid #ccc;
       border-radius:10px;
-      padding:15px;
-      cursor:pointer;
-      transition:.2s;
-      font-weight:bold;
+      overflow:hidden;
     }
-    .nome:hover{
-      transform:scale(1.03);
+    th, td{
+      border:1px solid #ddd;
+      padding:10px;
+      text-align:center;
     }
-    .marcado{
-      background:#4caf50;
+    th{
+      background:#222;
       color:white;
-      border-color:#2e7d32;
+    }
+    input[type="text"]{
+      width:90%;
+      padding:6px;
+      border:1px solid #ccc;
+      border-radius:6px;
+    }
+    tr.pago{
+      background:#9be79b;
     }
   </style>
 </head>
 <body>
 
-  <h1>🎉 Rifa do Terreiro 🎉</h1>
-  <p>Toque no nome para marcar como vendido</p>
+<h1>Rifa do Terreiro</h1>
 
-  <div class="grid" id="grid"></div>
+<table id="rifa">
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Comprador</th>
+      <th>PIX Pago</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Maria</td>
+      <td><input type="text"></td>
+      <td><input type="checkbox" onchange="marcarPago(this)"></td>
+    </tr>
+    <tr>
+      <td>João</td>
+      <td><input type="text"></td>
+      <td><input type="checkbox" onchange="marcarPago(this)"></td>
+    </tr>
+    <tr>
+      <td>José</td>
+      <td><input type="text"></td>
+      <td><input type="checkbox" onchange="marcarPago(this)"></td>
+    </tr>
+    <tr>
+      <td>Ana</td>
+      <td><input type="text"></td>
+      <td><input type="checkbox" onchange="marcarPago(this)"></td>
+    </tr>
+  </tbody>
+</table>
 
-  <script>
-    const nomes = [
-      "Maria","João","Ana","Carlos","Pedro",
-      "Paula","José","Marcos","Lucia","Rita",
-      "André","Juliana","Ricardo","Patrícia","Fernando",
-      "Cláudia","Bruno","Camila","Diego","Aline",
-      "Roberto","Vanessa","Leandro","Tatiane","Eduardo"
-    ];
-
-    const grid = document.getElementById("grid");
-
-    nomes.forEach(nome => {
-      const div = document.createElement("div");
-      div.className = "nome";
-      div.textContent = nome;
-
-      div.onclick = () => {
-        div.classList.toggle("marcado");
-      };
-
-      grid.appendChild(div);
-    });
-  </script>
+<script>
+function marcarPago(checkbox){
+  const linha = checkbox.parentElement.parentElement;
+  if(checkbox.checked){
+    linha.classList.add("pago");
+  } else {
+    linha.classList.remove("pago");
+  }
+}
+</script>
 
 </body>
 </html>
