@@ -1,771 +1,349 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
-<title>Rifa 2.0</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rifa Compartilhada</title>
 
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,Helvetica,sans-serif;
-}
-
 body{
-background:#ececec;
-padding:15px;
+  font-family:Arial,sans-serif;
+  background:#f2f2f2;
+  margin:0;
+  padding:15px;
 }
-
 h1{
-text-align:center;
-margin-bottom:5px;
+  text-align:center;
+  margin-bottom:5px;
 }
-
-.subtitulo{
-text-align:center;
-font-size:22px;
-margin-bottom:20px;
-font-weight:bold;
-color:#0b7d30;
+.sub{
+  text-align:center;
+  font-size:20px;
+  font-weight:bold;
+  color:#0a7d2c;
+  margin-bottom:20px;
 }
-
-.painel{
-
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:10px;
-margin-bottom:20px;
-
+.cards{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-bottom:15px;
 }
-
 .card{
-
-background:white;
-padding:15px;
-border-radius:10px;
-text-align:center;
-box-shadow:0 0 6px rgba(0,0,0,.2);
-
+  background:white;
+  padding:15px;
+  border-radius:10px;
+  text-align:center;
+  box-shadow:0 0 6px rgba(0,0,0,.15);
 }
-
-.card h2{
-
-font-size:14px;
-
+.card h3{
+  margin:0;
+  font-size:14px;
 }
-
 .card span{
-
-font-size:28px;
-font-weight:bold;
-
+  font-size:28px;
+  font-weight:bold;
 }
-
 .botoes{
-
-display:flex;
-gap:10px;
-justify-content:center;
-margin-bottom:15px;
-flex-wrap:wrap;
-
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin-bottom:15px;
+  flex-wrap:wrap;
 }
-
 button{
-
-padding:10px 16px;
-border:none;
-border-radius:8px;
-cursor:pointer;
-font-size:15px;
-
+  border:none;
+  border-radius:8px;
+  padding:10px 14px;
+  cursor:pointer;
+  font-size:14px;
 }
-
-.login{
-
-background:#222;
-color:white;
-
+.admin{background:#222;color:white;}
+.sair{background:#666;color:white;}
+.reset{background:#c62828;color:white;}
+input{
+  width:100%;
+  padding:8px;
+  border-radius:6px;
+  border:1px solid #ccc;
+  box-sizing:border-box;
 }
-
-.logout{
-
-background:#777;
-color:white;
-
-}
-
-.reset{
-
-background:#d50000;
-color:white;
-
-}
-
-input[type=text]{
-
-width:100%;
-padding:8px;
-border-radius:6px;
-border:1px solid #bbb;
-
-}
-
-#pesquisa{
-
-margin-bottom:15px;
-
-}
-
 table{
-
-width:100%;
-border-collapse:collapse;
-background:white;
-
+  width:100%;
+  border-collapse:collapse;
+  background:white;
+  border-radius:10px;
+  overflow:hidden;
 }
-
 th{
-
-background:#202020;
-color:white;
-padding:10px;
-
+  background:#222;
+  color:white;
+  padding:10px;
 }
-
 td{
-
-padding:8px;
-border:1px solid #ddd;
-text-align:center;
-
+  padding:8px;
+  border:1px solid #ddd;
+  text-align:center;
 }
-
-.disponivel{
-
-background:white;
-
+.disponivel{background:white;}
+.reservado{background:#fff7d6;}
+.pago{background:#c8f7c5;}
+.tag{
+  font-weight:bold;
 }
-
-.reservado{
-
-background:#fff8d5;
-
-}
-
-.pago{
-
-background:#b9f6ca;
-
-}
-
-.status{
-
-font-weight:bold;
-
-}
-
-.verde{
-
-color:#0c8a33;
-
-}
-
-.amarelo{
-
-color:#b8860b;
-
-}
-
-.azul{
-
-color:#1565c0;
-
-}
-
-.btnReservar{
-
-background:#1565c0;
-color:white;
-
-}
-
-.btnPago{
-
-background:#2e7d32;
-color:white;
-
-}
-
-.btnLiberar{
-
-background:#d32f2f;
-color:white;
-
-}
-
+.verde{color:#0a7d2c;}
+.amarelo{color:#b8860b;}
+.azul{color:#1565c0;}
 @media(max-width:700px){
-
-.painel{
-
-grid-template-columns:repeat(2,1fr);
-
+  .cards{grid-template-columns:1fr;}
+  table{font-size:12px;}
 }
-
-table{
-
-font-size:13px;
-
-}
-
-button{
-
-font-size:13px;
-
-}
-
-}
-
 </style>
-
 </head>
 
 <body>
 
-<h1>Rifa Beneficente</h1>
+<h1>Rifa Compartilhada</h1>
+<div class="sub">Prêmio Surpresa</div>
 
-<div class="subtitulo">
-
-Prêmio Surpresa
-
+<div class="cards">
+  <div class="card"><h3>Disponíveis</h3><span id="disp">0</span></div>
+  <div class="card"><h3>Reservados</h3><span id="res">0</span></div>
+  <div class="card"><h3>Pagos</h3><span id="pag">0</span></div>
 </div>
 
-<div class="painel">
-
-<div class="card">
-<h2>Total</h2>
-<span id="totalNomes">0</span>
-</div>
-
-<div class="card">
-<h2>Disponíveis</h2>
-<span id="dispNomes">0</span>
-</div>
-
-<div class="card">
-<h2>Reservados</h2>
-<span id="resNomes">0</span>
-</div>
-
-<div class="card">
-<h2>Pagos</h2>
-<span id="pagNomes">0</span>
-</div>
-
-</div>
-
-<input
-id="pesquisa"
-type="text"
-placeholder="Pesquisar nome..."
-onkeyup="pesquisar()">
+<input id="pesquisa" placeholder="Pesquisar nome..." onkeyup="filtrar()">
 
 <div class="botoes">
-
-<button
-class="login"
-onclick="loginAdmin()">
-
-Login Admin
-
-</button>
-
-<button
-class="logout"
-onclick="logoutAdmin()"
-style="display:none"
-id="btnLogout">
-
-Sair
-
-</button>
-
-<button
-class="reset"
-onclick="resetarRifa()"
-style="display:none"
-id="btnReset">
-
-Reset Geral
-
-</button>
-
+  <button class="admin" onclick="loginAdmin()">Login Admin</button>
+  <button class="sair" id="btnSair" style="display:none" onclick="logoutAdmin()">Sair</button>
+  <button class="reset" id="btnReset" style="display:none" onclick="resetar()">Reset Geral</button>
 </div>
 
 <table>
-
-<thead>
-
-<tr>
-
-<th>Nome</th>
-<th>Comprador</th>
-<th>Status</th>
-<th>Ação</th>
-
-</tr>
-
-</thead>
-
-<tbody id="tabela">
-
-</tbody>
-
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Comprador</th>
+      <th>Status</th>
+      <th>Ação</th>
+    </tr>
+  </thead>
+  <tbody id="tabela"></tbody>
 </table>
 
 <script>
 
-const senhaAdmin="Axé2026";
+const API = "https://script.google.com/macros/s/AKfycbykN9PFwTbIMLR0U6tVH5OgQUMM72PNwK0ZdCzl4K15o8Qiubm08FYxZij_BLOUOW0C-w/exec";
+const SENHA = "Axé2026";
 
-let admin=false;
-
-const valorNome=10;
-
-const nomes=[
-
-"Clarice",
-"Solange",
-"Cecília",
-"Raquel",
-"Lilian",
-"Nailda",
-"Lourdes",
-"Euvira",
-"Suelã",
-"Joelma",
-"Nazaré",
-"Edna",
-"Márcia",
-"Sueli",
-"Sheila",
-"Sandra",
-"Eliane",
-"Ivaneide",
-"Carolina",
-"Paula",
-"Carla",
-"Neide",
-"Lúcia",
-"Rosa",
-"Gisele"
-
-];
-
-function carregar(){
-
-const dados=localStorage.getItem("rifa");
-
-if(dados){
-
-return JSON.parse(dados);
-
+let admin = false;
+let lista = [];
+async function carregar() {
+  const r = await fetch(API);
+  lista = await r.json();
+  render();
 }
 
-return nomes.map(nome=>({
-
-nome:nome,
-
-comprador:"",
-
-travado:false,
-
-pago:false
-
-}));
-
+async function salvar(item) {
+  await fetch(API, {
+    method: "POST",
+    body: JSON.stringify(item)
+  });
 }
 
-let lista=carregar();
+function atualizarPainel() {
+  let d = 0, r = 0, p = 0;
 
-function salvar(){
+  lista.forEach(i => {
+    if (i.pago) p++;
+    else if (i.travado) r++;
+    else d++;
+  });
 
-localStorage.setItem("rifa",JSON.stringify(lista));
-
-}
-function atualizarPainel(){
-
-let disponiveis=0;
-let reservados=0;
-let pagos=0;
-
-lista.forEach(item=>{
-
-if(item.pago){
-
-pagos++;
-
-}else if(item.travado){
-
-reservados++;
-
-}else{
-
-disponiveis++;
-
+  document.getElementById("disp").innerText = d;
+  document.getElementById("res").innerText = r;
+  document.getElementById("pag").innerText = p;
 }
 
-});
-
-document.getElementById("totalNomes").innerText=lista.length;
-document.getElementById("dispNomes").innerText=disponiveis;
-document.getElementById("resNomes").innerText=reservados;
-document.getElementById("pagNomes").innerText=pagos;
-
-}
-
-function render(){
-
-const tbody=document.getElementById("tabela");
-
-tbody.innerHTML="";
-
-lista.forEach((item,index)=>{
-
-const tr=document.createElement("tr");
-
-if(item.pago){
-
-tr.className="pago";
-
-}else if(item.travado){
-
-tr.className="reservado";
-
-}else{
-
-tr.className="disponivel";
-
-}
-
-let status="";
-let acao="";
-
-if(item.pago){
-
-status='<span class="status verde">PAGO</span>';
-
-acao="";
-
-}
-
-else if(item.travado){
-
-status='<span class="status amarelo">RESERVADO</span>';
-
-if(admin){
-
-acao=`
-<button
-class="btnPago"
-onclick="marcarPago(${index})">
-
-Confirmar PIX
-
-</button>
-
-<button
-class="btnLiberar"
-onclick="liberar(${index})">
-
-Liberar
-
-</button>
-`;
-
-}else{
-
-acao="Reservado";
-
-}
-
-}
-
-else{
-
-status='<span class="status azul">DISPONÍVEL</span>';
-
-acao=`
-
-<input
-id="comp${index}"
-type="text"
-placeholder="Nome">
-
-<br><br>
-
-<button
-class="btnReservar"
-onclick="reservar(${index})">
-
-Reservar
-
-</button>
-
-`;
-
-}
-
-tr.innerHTML=`
-
-<td>${item.nome}</td>
-
-<td>${item.comprador}</td>
-
-<td>${status}</td>
-
-<td>${acao}</td>
-
-`;
-
-tbody.appendChild(tr);
-
-});
-
-salvar();
-
-atualizarPainel();
-
-}
-
-function reservar(index){
-
-if(lista[index].travado){
-
-alert("Nome já reservado.");
-
-return;
-
-}
-
-const nome=document
-.getElementById("comp"+index)
-.value
-.trim();
-
-if(nome===""){
-
-alert("Digite seu nome.");
-
-return;
-
-}
-
-lista[index].comprador=nome;
-
-lista[index].travado=true;
-
-salvar();
-
-render();
-
-}
-
-function liberar(index){
-
-if(!admin){
-
-return;
-
-}
-
-if(lista[index].pago){
-
-alert("Nome já está pago.");
-
-return;
-
-}
-
-if(confirm("Liberar esta reserva?")){
-
-lista[index].comprador="";
-
-lista[index].travado=false;
-
-salvar();
-
-render();
-
-}
-
-}
-
-function marcarPago(index){
-
-if(!admin){
-
-return;
-
-}
-
-if(lista[index].pago){
-
-return;
-
-}
-
-if(confirm("Confirmar recebimento do PIX?")){
-
-lista[index].pago=true;
-
-salvar();
-
-render();
-
-}
-
-}
-
-function loginAdmin(){
-
-const senha=prompt("Senha:");
-
-if(senha!==senhaAdmin){
-
-alert("Senha incorreta.");
-
-return;
-
-}
-
-admin=true;
-
-document.getElementById("btnLogout").style.display="inline-block";
-
-document.getElementById("btnReset").style.display="inline-block";
-
-render();
-
-}
-
-function logoutAdmin(){
-
-admin=false;
-
-document.getElementById("btnLogout").style.display="none";
-
-document.getElementById("btnReset").style.display="none";
-
-render();
-
-}
-
-function pesquisar(){
-
-const texto=document
-.getElementById("pesquisa")
-.value
-.toLowerCase();
-
-const linhas=document.querySelectorAll("tbody tr");
-
-linhas.forEach(linha=>{
-
-const nome=linha.children[0]
-.innerText
-.toLowerCase();
-
-linha.style.display=nome.includes(texto)
-?""
-:"none";
-
-});
-
-}
-function resetarRifa(){
-
-    if(!admin){
-        return;
+function render() {
+  const tbody = document.getElementById("tabela");
+  tbody.innerHTML = "";
+
+  lista.forEach((item, i) => {
+    const tr = document.createElement("tr");
+
+    if (item.pago) tr.className = "pago";
+    else if (item.travado) tr.className = "reservado";
+    else tr.className = "disponivel";
+
+    let status = "";
+    let acao = "";
+
+    if (item.pago) {
+      status = '<span class="tag verde">PAGO</span>';
+      acao = "Pago confirmado";
     }
 
-    const confirma = confirm(
-`ATENÇÃO!
+    else if (item.travado) {
+      status = '<span class="tag amarelo">RESERVADO</span>';
 
-Deseja realmente RESETAR toda a rifa?
+      if (admin) {
+        acao = `
+          <button style="background:#2e7d32;color:white"
+            onclick="confirmarPago(${i})">PIX</button>
 
-• Todos os compradores serão apagados.
-• Todos os pagamentos serão removidos.
-• Todos os nomes voltarão para disponíveis.
-
-Esta ação não poderá ser desfeita.`
-    );
-
-    if(!confirma){
-        return;
+          <button style="background:#c62828;color:white"
+            onclick="liberar(${i})">Liberar</button>
+        `;
+      } else {
+        acao = "Aguardando PIX";
+      }
     }
 
-    lista.forEach(item=>{
+    else {
+      status = '<span class="tag azul">DISPONÍVEL</span>';
 
-        item.comprador="";
-        item.travado=false;
-        item.pago=false;
+      acao = `
+        <input id="comp${i}" placeholder="Seu nome">
+        <br><br>
+        <button style="background:#1565c0;color:white"
+          onclick="reservar(${i})">Reservar</button>
+      `;
+    }
 
-    });
+    tr.innerHTML = `
+      <td>${item.nome}</td>
+      <td>${item.comprador || "-"}</td>
+      <td>${status}</td>
+      <td>${acao}</td>
+    `;
 
-    salvar();
+    tbody.appendChild(tr);
+  });
 
-    render();
+  atualizarPainel();
+}
+async function reservar(i) {
 
-    alert("Rifa reiniciada com sucesso.");
+  if (lista[i].travado) {
+    alert("Este nome já foi reservado.");
+    return;
+  }
 
+  const nome = document.getElementById(`comp${i}`).value.trim();
+
+  if (!nome) {
+    alert("Digite seu nome.");
+    return;
+  }
+
+  lista[i].comprador = nome;
+  lista[i].travado = true;
+
+  await salvar(lista[i]);
+  await carregar();
 }
 
-function calcularValor(){
+async function liberar(i) {
 
-    let pagos=0;
+  if (!admin) return;
 
-    lista.forEach(item=>{
+  if (lista[i].pago) {
+    alert("Não é possível liberar um nome já pago.");
+    return;
+  }
 
-        if(item.pago){
-            pagos++;
-        }
+  if (!confirm("Liberar esta reserva?")) return;
 
-    });
+  lista[i].comprador = "";
+  lista[i].travado = false;
 
-    return pagos*valorNome;
-
+  await salvar(lista[i]);
+  await carregar();
 }
 
-function atualizarTitulo(){
+async function confirmarPago(i) {
 
-    let arrecadado=calcularValor();
+  if (!admin) return;
 
-    document.title=
-    "Rifa - Arrecadado R$ "+arrecadado.toFixed(2);
+  if (!confirm("Confirmar recebimento do PIX?")) return;
 
+  lista[i].pago = true;
+
+  await salvar(lista[i]);
+  await carregar();
+}
+function loginAdmin() {
+
+  const s = prompt("Senha do administrador:");
+
+  if (s !== SENHA) {
+    alert("Senha incorreta.");
+    return;
+  }
+
+  admin = true;
+
+  document.getElementById("btnSair").style.display = "inline-block";
+  document.getElementById("btnReset").style.display = "inline-block";
+
+  render();
 }
 
-const salvarOriginal=salvar;
+function logoutAdmin() {
 
-salvar=function(){
+  admin = false;
 
-    salvarOriginal();
+  document.getElementById("btnSair").style.display = "none";
+  document.getElementById("btnReset").style.display = "none";
 
-    atualizarTitulo();
-
+  render();
 }
 
-render();
+function filtrar() {
 
-atualizarTitulo();
+  const texto = document.getElementById("pesquisa").value.toLowerCase();
+
+  document.querySelectorAll("tbody tr").forEach(tr => {
+
+    const nome = tr.children[0].innerText.toLowerCase();
+
+    tr.style.display = nome.includes(texto) ? "" : "none";
+  });
+}
+
+async function resetar() {
+
+  if (!admin) return;
+
+  const ok = confirm(
+    "ATENÇÃO!\\n\\n" +
+    "Isso vai apagar TODOS os compradores, " +
+    "remover TODOS os pagamentos e liberar TODOS os nomes.\\n\\n" +
+    "Deseja continuar?"
+  );
+
+  if (!ok) return;
+
+  for (const item of lista) {
+
+    item.comprador = "";
+    item.travado = false;
+    item.pago = false;
+
+    await salvar(item);
+  }
+
+  await carregar();
+
+  alert("Rifa resetada com sucesso!");
+}
+carregar();
+
+setInterval(carregar, 5000);
 
 </script>
 
 </body>
-
 </html>
