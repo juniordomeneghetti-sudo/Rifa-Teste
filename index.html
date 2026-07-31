@@ -1,214 +1,771 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rifa Teste</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Rifa 2.0</title>
 
 <style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
+
 body{
-  font-family: Arial, sans-serif;
-  background:#f3f3f3;
-  margin:0;
-  padding:15px;
+background:#ececec;
+padding:15px;
 }
+
 h1{
-  text-align:center;
-  color:#222;
+text-align:center;
+margin-bottom:5px;
 }
-.admin{
-  text-align:center;
-  margin-bottom:15px;
+
+.subtitulo{
+text-align:center;
+font-size:22px;
+margin-bottom:20px;
+font-weight:bold;
+color:#0b7d30;
 }
+
+.painel{
+
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
+margin-bottom:20px;
+
+}
+
+.card{
+
+background:white;
+padding:15px;
+border-radius:10px;
+text-align:center;
+box-shadow:0 0 6px rgba(0,0,0,.2);
+
+}
+
+.card h2{
+
+font-size:14px;
+
+}
+
+.card span{
+
+font-size:28px;
+font-weight:bold;
+
+}
+
+.botoes{
+
+display:flex;
+gap:10px;
+justify-content:center;
+margin-bottom:15px;
+flex-wrap:wrap;
+
+}
+
 button{
-  padding:8px 12px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
+
+padding:10px 16px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:15px;
+
 }
-.btn-admin{background:#222;color:#fff;}
-.btn-reservar{background:#1976d2;color:#fff;}
-.btn-pago{background:#2e7d32;color:#fff;}
-.btn-liberar{background:#d32f2f;color:#fff;}
+
+.login{
+
+background:#222;
+color:white;
+
+}
+
+.logout{
+
+background:#777;
+color:white;
+
+}
+
+.reset{
+
+background:#d50000;
+color:white;
+
+}
+
+input[type=text]{
+
+width:100%;
+padding:8px;
+border-radius:6px;
+border:1px solid #bbb;
+
+}
+
+#pesquisa{
+
+margin-bottom:15px;
+
+}
 
 table{
-  width:100%;
-  border-collapse:collapse;
-  background:#fff;
-  border-radius:10px;
-  overflow:hidden;
+
+width:100%;
+border-collapse:collapse;
+background:white;
+
 }
-th,td{
-  border:1px solid #ddd;
-  padding:10px;
-  text-align:center;
-}
+
 th{
-  background:#222;
-  color:#fff;
+
+background:#202020;
+color:white;
+padding:10px;
+
 }
-input{
-  width:95%;
-  padding:6px;
-  border:1px solid #ccc;
-  border-radius:6px;
+
+td{
+
+padding:8px;
+border:1px solid #ddd;
+text-align:center;
+
 }
-.travado input{
-  background:#eee;
+
+.disponivel{
+
+background:white;
+
 }
+
+.reservado{
+
+background:#fff8d5;
+
+}
+
 .pago{
-  background:#a5d6a7 !important;
+
+background:#b9f6ca;
+
 }
-.txt-sup{
-  background:#7894;
-  color:#000;
-  text-align:center;
-  font-size: 60px;
+
+.status{
+
+font-weight:bold;
+
 }
+
+.verde{
+
+color:#0c8a33;
+
+}
+
+.amarelo{
+
+color:#b8860b;
+
+}
+
+.azul{
+
+color:#1565c0;
+
+}
+
+.btnReservar{
+
+background:#1565c0;
+color:white;
+
+}
+
+.btnPago{
+
+background:#2e7d32;
+color:white;
+
+}
+
+.btnLiberar{
+
+background:#d32f2f;
+color:white;
+
+}
+
+@media(max-width:700px){
+
+.painel{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+table{
+
+font-size:13px;
+
+}
+
+button{
+
+font-size:13px;
+
+}
+
+}
+
 </style>
+
 </head>
+
 <body>
 
-<h1>Rifa Teste</h1>
-  <p class="txt-sup"> Prêmio Surpresa!</p>
+<h1>Rifa Beneficente</h1>
 
-<div class="admin">
-  <button class="btn-admin" onclick="loginAdmin()">Login Admin</button>
-  <p id="statusAdmin">Modo visitante</p>
+<div class="subtitulo">
+
+Prêmio Surpresa
+
+</div>
+
+<div class="painel">
+
+<div class="card">
+<h2>Total</h2>
+<span id="totalNomes">0</span>
+</div>
+
+<div class="card">
+<h2>Disponíveis</h2>
+<span id="dispNomes">0</span>
+</div>
+
+<div class="card">
+<h2>Reservados</h2>
+<span id="resNomes">0</span>
+</div>
+
+<div class="card">
+<h2>Pagos</h2>
+<span id="pagNomes">0</span>
+</div>
+
+</div>
+
+<input
+id="pesquisa"
+type="text"
+placeholder="Pesquisar nome..."
+onkeyup="pesquisar()">
+
+<div class="botoes">
+
+<button
+class="login"
+onclick="loginAdmin()">
+
+Login Admin
+
+</button>
+
+<button
+class="logout"
+onclick="logoutAdmin()"
+style="display:none"
+id="btnLogout">
+
+Sair
+
+</button>
+
+<button
+class="reset"
+onclick="resetarRifa()"
+style="display:none"
+id="btnReset">
+
+Reset Geral
+
+</button>
+
 </div>
 
 <table>
+
 <thead>
+
 <tr>
-  <th>Nome</th>
-  <th>Comprador</th>
-  <th>Ação</th>
-  <th>PIX</th>
+
+<th>Nome</th>
+<th>Comprador</th>
+<th>Status</th>
+<th>Ação</th>
+
 </tr>
+
 </thead>
-<tbody id="tabela"></tbody>
+
+<tbody id="tabela">
+
+</tbody>
+
 </table>
 
 <script>
-const senhaAdmin = 'Axé2026';
-let admin = false;
 
-const nomes = [
-  'Clarice','Solange','Cecília','Raquel','Lilian',
-  'Nailda','Lourdes','Euvira','Suelã','Joelma', 
-  'Nazaré', 'Edna', 'Márcia', 'Sueli', 'Sheila', 'Sandra', 
-  'Eliane', 'Ivaneide', 'Carolina', 'Paula', 'Carla', 'Neide', 
-  'Lúcia', 'Rosa', 'Gisele',
+const senhaAdmin="Axé2026";
+
+let admin=false;
+
+const valorNome=10;
+
+const nomes=[
+
+"Clarice",
+"Solange",
+"Cecília",
+"Raquel",
+"Lilian",
+"Nailda",
+"Lourdes",
+"Euvira",
+"Suelã",
+"Joelma",
+"Nazaré",
+"Edna",
+"Márcia",
+"Sueli",
+"Sheila",
+"Sandra",
+"Eliane",
+"Ivaneide",
+"Carolina",
+"Paula",
+"Carla",
+"Neide",
+"Lúcia",
+"Rosa",
+"Gisele"
+
 ];
 
-function salvar(){
-  localStorage.setItem('rifaDados', JSON.stringify(dados));
-}
-
 function carregar(){
-  const salvo = localStorage.getItem('rifaDados');
-  return salvo ? JSON.parse(salvo) :
-    nomes.map(n => ({
-      nome:n,
-      comprador:'',
-      travado:false,
-      pago:false
-    }));
+
+const dados=localStorage.getItem("rifa");
+
+if(dados){
+
+return JSON.parse(dados);
+
 }
 
-let dados = carregar();
+return nomes.map(nome=>({
+
+nome:nome,
+
+comprador:"",
+
+travado:false,
+
+pago:false
+
+}));
+
+}
+
+let lista=carregar();
+
+function salvar(){
+
+localStorage.setItem("rifa",JSON.stringify(lista));
+
+}
+function atualizarPainel(){
+
+let disponiveis=0;
+let reservados=0;
+let pagos=0;
+
+lista.forEach(item=>{
+
+if(item.pago){
+
+pagos++;
+
+}else if(item.travado){
+
+reservados++;
+
+}else{
+
+disponiveis++;
+
+}
+
+});
+
+document.getElementById("totalNomes").innerText=lista.length;
+document.getElementById("dispNomes").innerText=disponiveis;
+document.getElementById("resNomes").innerText=reservados;
+document.getElementById("pagNomes").innerText=pagos;
+
+}
 
 function render(){
-  const tbody = document.getElementById('tabela');
-  tbody.innerHTML = '';
 
-  dados.forEach((item, i) => {
-    const tr = document.createElement('tr');
+const tbody=document.getElementById("tabela");
 
-    if(item.pago) tr.classList.add('pago');
-    if(item.travado) tr.classList.add('travado');
+tbody.innerHTML="";
 
-    let acao = '';
-    let pix = '';
+lista.forEach((item,index)=>{
 
-    if(item.pago){
-      pix = 'Pago';
-      acao = admin ? `<button class="btn-liberar" onclick="liberar(${i})">Liberar</button>` : 'Travado';
-    } else if(item.travado){
-      pix = admin ? `<button class="btn-pago" onclick="marcarPago(${i})">Marcar Pago</button>` : 'Aguardando';
-      acao = admin ? `<button class="btn-liberar" onclick="liberar(${i})">Liberar</button>` : 'Reservado';
-    } else {
-      pix = 'Pendente';
-      acao = `<button class="btn-reservar" onclick="reservar(${i})">Reservar</button>`;
-    }
+const tr=document.createElement("tr");
 
-    tr.innerHTML = `
-      <td>${item.nome}</td>
-      <td>
-        <input id="comp${i}" value="${item.comprador}"
-        ${item.travado && !admin ? 'disabled' : ''}>
-      </td>
-      <td>${acao}</td>
-      <td>${pix}</td>
-    `;
+if(item.pago){
 
-    tbody.appendChild(tr);
-  });
+tr.className="pago";
 
-  salvar();
+}else if(item.travado){
+
+tr.className="reservado";
+
+}else{
+
+tr.className="disponivel";
+
 }
 
-function reservar(i){
-  const input = document.getElementById(`comp${i}`);
-  const nome = input.value.trim();
+let status="";
+let acao="";
 
-  if(!nome){
-    alert('Digite seu nome');
-    return;
-  }
+if(item.pago){
 
-  dados[i].comprador = nome;
-  dados[i].travado = true;
+status='<span class="status verde">PAGO</span>';
 
-  render();
+acao="";
+
+}
+
+else if(item.travado){
+
+status='<span class="status amarelo">RESERVADO</span>';
+
+if(admin){
+
+acao=`
+<button
+class="btnPago"
+onclick="marcarPago(${index})">
+
+Confirmar PIX
+
+</button>
+
+<button
+class="btnLiberar"
+onclick="liberar(${index})">
+
+Liberar
+
+</button>
+`;
+
+}else{
+
+acao="Reservado";
+
+}
+
+}
+
+else{
+
+status='<span class="status azul">DISPONÍVEL</span>';
+
+acao=`
+
+<input
+id="comp${index}"
+type="text"
+placeholder="Nome">
+
+<br><br>
+
+<button
+class="btnReservar"
+onclick="reservar(${index})">
+
+Reservar
+
+</button>
+
+`;
+
+}
+
+tr.innerHTML=`
+
+<td>${item.nome}</td>
+
+<td>${item.comprador}</td>
+
+<td>${status}</td>
+
+<td>${acao}</td>
+
+`;
+
+tbody.appendChild(tr);
+
+});
+
+salvar();
+
+atualizarPainel();
+
+}
+
+function reservar(index){
+
+if(lista[index].travado){
+
+alert("Nome já reservado.");
+
+return;
+
+}
+
+const nome=document
+.getElementById("comp"+index)
+.value
+.trim();
+
+if(nome===""){
+
+alert("Digite seu nome.");
+
+return;
+
+}
+
+lista[index].comprador=nome;
+
+lista[index].travado=true;
+
+salvar();
+
+render();
+
+}
+
+function liberar(index){
+
+if(!admin){
+
+return;
+
+}
+
+if(lista[index].pago){
+
+alert("Nome já está pago.");
+
+return;
+
+}
+
+if(confirm("Liberar esta reserva?")){
+
+lista[index].comprador="";
+
+lista[index].travado=false;
+
+salvar();
+
+render();
+
+}
+
+}
+
+function marcarPago(index){
+
+if(!admin){
+
+return;
+
+}
+
+if(lista[index].pago){
+
+return;
+
+}
+
+if(confirm("Confirmar recebimento do PIX?")){
+
+lista[index].pago=true;
+
+salvar();
+
+render();
+
+}
+
 }
 
 function loginAdmin(){
-  const s = prompt('Senha do administrador');
 
-  if(s === senhaAdmin){
-    admin = true;
-    document.getElementById('statusAdmin').innerText = 'Admin conectado';
+const senha=prompt("Senha:");
+
+if(senha!==senhaAdmin){
+
+alert("Senha incorreta.");
+
+return;
+
+}
+
+admin=true;
+
+document.getElementById("btnLogout").style.display="inline-block";
+
+document.getElementById("btnReset").style.display="inline-block";
+
+render();
+
+}
+
+function logoutAdmin(){
+
+admin=false;
+
+document.getElementById("btnLogout").style.display="none";
+
+document.getElementById("btnReset").style.display="none";
+
+render();
+
+}
+
+function pesquisar(){
+
+const texto=document
+.getElementById("pesquisa")
+.value
+.toLowerCase();
+
+const linhas=document.querySelectorAll("tbody tr");
+
+linhas.forEach(linha=>{
+
+const nome=linha.children[0]
+.innerText
+.toLowerCase();
+
+linha.style.display=nome.includes(texto)
+?""
+:"none";
+
+});
+
+}
+function resetarRifa(){
+
+    if(!admin){
+        return;
+    }
+
+    const confirma = confirm(
+`ATENÇÃO!
+
+Deseja realmente RESETAR toda a rifa?
+
+• Todos os compradores serão apagados.
+• Todos os pagamentos serão removidos.
+• Todos os nomes voltarão para disponíveis.
+
+Esta ação não poderá ser desfeita.`
+    );
+
+    if(!confirma){
+        return;
+    }
+
+    lista.forEach(item=>{
+
+        item.comprador="";
+        item.travado=false;
+        item.pago=false;
+
+    });
+
+    salvar();
+
     render();
-  }else{
-    alert('Senha incorreta');
-  }
+
+    alert("Rifa reiniciada com sucesso.");
+
 }
 
-function liberar(i){
-  if(!admin) return;
+function calcularValor(){
 
-  if(dados[i].pago){
-    alert('PIX já confirmado. Não pode ser removido.');
-    return;
-  }
+    let pagos=0;
 
-  dados[i].comprador = '';
-  dados[i].travado = false;
+    lista.forEach(item=>{
 
-  render();
+        if(item.pago){
+            pagos++;
+        }
+
+    });
+
+    return pagos*valorNome;
+
 }
 
-function marcarPago(i){
-  if(!admin) return;
+function atualizarTitulo(){
 
-  dados[i].pago = true;
+    let arrecadado=calcularValor();
 
-  render();
+    document.title=
+    "Rifa - Arrecadado R$ "+arrecadado.toFixed(2);
+
+}
+
+const salvarOriginal=salvar;
+
+salvar=function(){
+
+    salvarOriginal();
+
+    atualizarTitulo();
+
 }
 
 render();
+
+atualizarTitulo();
+
 </script>
 
 </body>
+
 </html>
