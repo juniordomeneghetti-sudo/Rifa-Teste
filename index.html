@@ -231,17 +231,25 @@ async function reservar(i) {
     return;
   }
 
-  const nome = document.getElementById(`comp${i}`).value.trim();
+  const input = document.getElementById(`comp${i}`);
+  const nome = input.value.trim();
 
   if (!nome) {
-    alert("Digite seu nome.");
+    input.focus();
     return;
   }
+
+  // Desabilita para evitar duplo clique
+  input.disabled = true;
 
   lista[i].comprador = nome;
   lista[i].travado = true;
 
   await salvar(lista[i]);
+
+  // Fecha o teclado após salvar
+  input.blur();
+
   await carregar();
 }
 
@@ -341,7 +349,7 @@ async function resetar() {
 }
 carregar();
 
-setInterval(carregar, 5000);
+setInterval(() => { if (document.activeElement.tagName !== 'INPUT') { carregar(); } }, 5000);
 
 </script>
 
